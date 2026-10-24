@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic AI • Adaptive PQC Smart Door Lock</title>
+  <link rel="stylesheet" href="/door/door.css">
+  <link rel="stylesheet" href="/shared/animations.css">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="brand-icon">🛡️</div>
+      <div>
+        <div class="brand-title">Agentic AI • Adaptive PQC Smart Door Lock</div>
+        <div class="brand-sub">NIST Quantum-Resistant IoT Security Simulation & ESP8266 Hardware Node</div>
+      </div>
+    </div>
+    <div class="nav-badges">
+      <div id="hwBadge" class="badge badge-offline">
+        <span class="dot">●</span> ESP8266: OFFLINE
+      </div>
+      <div id="pqcBadge" class="badge badge-pqc">
+        🔐 ML-KEM-512 / ML-DSA-44
+      </div>
+      <a href="/owner" class="nav-link">Owner Console ➔</a>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <header class="hero">
+      <h1>Autonomous Quantum-Resistant Door Control</h1>
+      <p>Multi-layered security engine driven by Random Forest intrusion classification and an 8-node LangGraph agent with dynamic NIST Post-Quantum Cryptography.</p>
+    </header>
+
+    <!-- Telemetry Stats Bar -->
+    <section class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-label">Door Actuator State</div>
+        <div class="stat-value" id="statDoorState" style="color:var(--red)">LOCKED</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">AI Risk Assessment</div>
+        <div class="stat-value" id="statRiskLevel" style="color:var(--green)">LOW</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Failed Attempts</div>
+        <div class="stat-value" id="statFailedAttempts">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Active PQC Profile</div>
+        <div class="stat-value" id="statPqcName" style="color:var(--cyan)">ML-KEM-512</div>
+      </div>
+    </section>
+
+    <!-- Interactive 3-Column Main Grid -->
+    <div class="main-grid">
+      
+      <!-- COLUMN 1: 3D Simulated Door Visualizer -->
+      <div class="card door-col-card">
+        <div class="card-header">
+          <div class="card-header-icon">🚪</div>
+          <div>
+            <h2 class="card-title">Simulated Physical Door</h2>
+            <div class="card-subtitle">Real-time actuator & lock telemetry</div>
+          </div>
+        </div>
+
+        <div class="door-viewport">
+          <div class="door-frame">
+            <div id="doorLeaf" class="door-leaf">
+              <div id="doorIcon" style="font-size:42px; margin-bottom:10px">🔒</div>
+              <div id="doorUserLabel" style="font-size:12px; color:var(--muted); font-weight:800; letter-spacing:1px">SECURE</div>
+              <div class="door-handle"></div>
+              <div id="lockBolt" class="door-lock-bolt"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="doorStatusPill" class="door-status-pill status-locked">
+          DOOR LOCKED
+        </div>
+
+        <div class="door-controls-box">
+          <div class="door-controls-label">Actuator Overrides</div>
+          <div class="door-controls-buttons">
+            <button class="btn-ctrl btn-ctrl-lock" onclick="manualLockDoor()">🔒 Lock Door</button>
+            <button class="btn-ctrl btn-ctrl-unlock" onclick="manualUnlockDoor()">🔓 Force Unlock</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 2: Prominent PIN Entry Panel & Virtual Keypad -->
+      <div class="card pin-entry-card" id="pinEntryPanel">
+        <div class="terminal-header-group">
+          <div class="terminal-badge">VIRTUAL ACCESS NODE</div>
+          <h2 class="terminal-title">SECURE DOOR ACCESS</h2>
+          <div id="terminalPrompt" class="terminal-prompt-pill">ENTER PIN</div>
+        </div>
+
+        <!-- Masked PIN Display Screen -->
+        <div class="pin-display-wrapper">
+          <div id="pinDisplay" class="pin-display" aria-label="Masked PIN Input">
+            <span class="pin-dot placeholder">○</span>
+            <span class="pin-dot placeholder">○</span>
+            <span class="pin-dot placeholder">○</span>
+            <span class="pin-dot placeholder">○</span>
+          </div>
+          <div class="pin-security-hint">
+            <span class="shield-mini">🔒</span> End-to-End Cryptographically Masked
+          </div>
+        </div>
+
+        <!-- 4x4 Matrix Keypad -->
+        <div class="keypad-container">
+          <div class="keypad-grid" role="group" aria-label="4x4 Matrix Keypad">
+            <button class="key-btn num-key" id="key-1" onclick="pressKey('1')" aria-label="Key 1">1</button>
+            <button class="key-btn num-key" id="key-2" onclick="pressKey('2')" aria-label="Key 2">2</button>
+            <button class="key-btn num-key" id="key-3" onclick="pressKey('3')" aria-label="Key 3">3</button>
+            <button class="key-btn letter-key" id="key-A" onclick="pressKey('A')" aria-label="Key A">A</button>
+
+            <button class="key-btn num-key" id="key-4" onclick="pressKey('4')" aria-label="Key 4">4</button>
+            <button class="key-btn num-key" id="key-5" onclick="pressKey('5')" aria-label="Key 5">5</button>
+            <button class="key-btn num-key" id="key-6" onclick="pressKey('6')" aria-label="Key 6">6</button>
+            <button class="key-btn letter-key" id="key-B" onclick="pressKey('B')" aria-label="Key B">B</button>
+
+            <button class="key-btn num-key" id="key-7" onclick="pressKey('7')" aria-label="Key 7">7</button>
+            <button class="key-btn num-key" id="key-8" onclick="pressKey('8')" aria-label="Key 8">8</button>
+            <button class="key-btn num-key" id="key-9" onclick="pressKey('9')" aria-label="Key 9">9</button>
+            <button class="key-btn letter-key" id="key-C" onclick="pressKey('C')" aria-label="Key C">C</button>
+
+            <button class="key-btn action-key key-clear-star" id="key-star" onclick="clearPin()" aria-label="Key Star or Clear">
+              <span class="key-sub">*</span> CLEAR
+            </button>
+            <button class="key-btn num-key" id="key-0" onclick="pressKey('0')" aria-label="Key 0">0</button>
+            <button class="key-btn submit-key key-submit-hash" id="key-hash" onclick="submitPin()" aria-label="Key Hash or Enter">
+              <span class="key-sub">#</span> ENTER
+            </button>
+            <button class="key-btn letter-key" id="key-D" onclick="pressKey('D')" aria-label="Key D">D</button>
+          </div>
+
+          <!-- Explicit Action Toolbar -->
+          <div class="action-toolbar">
+            <button class="toolbar-btn btn-backspace" id="btnBackspace" onclick="backspacePin()" aria-label="Backspace">
+              ⌫ BACKSPACE
+            </button>
+            <button class="toolbar-btn btn-clear-all" id="btnClearAll" onclick="clearPin()" aria-label="Clear PIN">
+              ✕ CLEAR
+            </button>
+            <button class="toolbar-btn btn-enter-submit" id="btnEnterSubmit" onclick="submitPin()" aria-label="Submit PIN">
+              🔓 UNLOCK / SUBMIT
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Simulation Actions -->
+        <div class="quick-simulation-section">
+          <div class="simulation-title">Hardware & Pipeline Simulation</div>
+          <div class="quick-actions">
+            <button class="btn-secondary" onclick="clearPin()">Clear PIN Entry</button>
+            <button class="btn-secondary" onclick="simulatePin('9999')">Simulate Wrong PIN</button>
+            <button class="btn-secondary" onclick="triggerAabb()">Trigger AABB Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 3: Security, Quantum Defense & Reset Flow Telemetry -->
+      <div class="card security-col-card">
+        <div class="card-header">
+          <div class="card-header-icon">🔐</div>
+          <div>
+            <h2 class="card-title">Quantum Defense & Risk</h2>
+            <div class="card-subtitle">NIST Post-Quantum Cryptography</div>
+          </div>
+        </div>
+
+        <!-- PQC Telemetry Details -->
+        <div class="telemetry-info-panel">
+          <div class="info-row">
+            <span class="info-label">Active KEM Algorithm</span>
+            <span class="info-value text-cyan" id="pqcKemVal">ML-KEM-512</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Digital Signature</span>
+            <span class="info-value text-purple" id="pqcSigVal">ML-DSA-44</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">NIST Security Level</span>
+            <span class="info-value" id="pqcLevelVal">Level 1 (AES-128 Eq.)</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Intrusion Velocity</span>
+            <span class="info-value" id="velocityVal">0.0 att/min</span>
+          </div>
+        </div>
+
+        <section class="adaptive-monitor-card" aria-labelledby="adaptiveMonitorTitle">
+          <div class="adaptive-monitor-heading">
+            <h3 id="adaptiveMonitorTitle">Adaptive Security Monitoring</h3>
+            <span id="adaptiveMonitorStatus" class="monitor-status">MONITORING</span>
+          </div>
+          <div class="monitor-grid">
+            <div><span>Device risk</span><strong id="monitorDeviceRisk">NOT ASSESSED</strong></div>
+            <div><span>Network risk</span><strong id="monitorNetworkRisk">UNKNOWN</strong></div>
+            <div><span>Final risk</span><strong id="monitorFinalRisk">NOT ASSESSED</strong></div>
+            <div><span>Selected PQC</span><strong id="monitorPqcProfile">ML-KEM-512</strong></div>
+          </div>
+          <div id="monitorEvidenceStatus" class="monitor-evidence" role="status" aria-live="polite">
+            No recent authentication decision. Network model inference is unavailable.
+          </div>
+          <div class="monitor-capture-controls" id="doorCaptureControls" hidden>
+            <label for="doorCaptureInterface">Authorized interface</label>
+            <select id="doorCaptureInterface" class="form-input">
+              <option value="">Select an interface</option>
+            </select>
+            <label for="doorCaptureDuration">Limit (seconds)</label>
+            <input id="doorCaptureDuration" class="form-input" type="number" min="10" max="300" value="60">
+            <div class="monitor-buttons">
+              <button id="doorCaptureStart" class="btn-ctrl btn-ctrl-lock" type="button" onclick="startDoorCapture()">Start passive capture</button>
+              <button id="doorCaptureStop" class="btn-ctrl btn-ctrl-unlock" type="button" onclick="stopDoorCapture()" disabled>Stop capture</button>
+            </div>
+          </div>
+          <div id="doorCaptureStatus" class="monitor-evidence">Capture is opt-in and stopped.</div>
+        </section>
+
+        <!-- Security Flow & Reset Guide -->
+        <div class="reset-tracker-card" id="resetTrackerBox">
+          <div class="tracker-header">
+            <span class="tracker-title">Security State Tracker</span>
+            <span class="tracker-badge" id="trackerBadge">NORMAL</span>
+          </div>
+          <div class="tracker-steps">
+            <div class="tracker-step active" id="step-normal">
+              <div class="step-num">1</div>
+              <div class="step-text">
+                <div class="step-title">Normal Mode</div>
+                <div class="step-desc">Enter 4-digit PIN for access</div>
+              </div>
+            </div>
+            <div class="tracker-step" id="step-aabb">
+              <div class="step-num">2</div>
+              <div class="step-text">
+                <div class="step-title">AABB Reset</div>
+                <div class="step-desc">Awaiting 6-digit Owner OTP</div>
+              </div>
+            </div>
+            <div class="tracker-step" id="step-otp">
+              <div class="step-num">3</div>
+              <div class="step-text">
+                <div class="step-title">OTP Verified</div>
+                <div class="step-desc">Set & confirm new door PIN</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Keypad Operation Help -->
+        <div class="keypad-help-box">
+          <div class="help-title">Keypad Shortcuts & Controls</div>
+          <ul class="help-list">
+            <li><b>0–9:</b> Input digits</li>
+            <li><b>A–D:</b> Matrix letters (e.g. AABB)</li>
+            <li><b>* or Clear:</b> Clear entry</li>
+            <li><b># or Enter:</b> Submit PIN to security engine</li>
+            <li><b>Keyboard:</b> Physical numpad & letters supported</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <section class="card network-history-section" aria-labelledby="networkHistoryTitle">
+      <div class="card-header">
+        <div class="card-header-icon">📊</div>
+        <div>
+          <h2 class="card-title" id="networkHistoryTitle">Network Assessment History</h2>
+          <div class="card-subtitle">Persisted network assessments; offline CSV records are historical evidence</div>
+        </div>
+      </div>
+      <p id="doorNetworkHistoryStatus" class="network-history-status" role="status" aria-live="polite">
+        Loading persisted network assessment history...
+      </p>
+      <form id="doorOfflineCsvForm" class="offline-csv-form">
+        <div class="offline-csv-input">
+          <label for="doorNetworkCsvFile">Choose File <span>(offline/supplied test data)</span></label>
+          <input id="doorNetworkCsvFile" type="file" accept=".csv,text/csv" required>
+        </div>
+        <div class="offline-csv-input offline-csv-row">
+          <label for="doorNetworkCsvRow">Data Row Number (excluding header)</label>
+          <input id="doorNetworkCsvRow" type="number" min="1" step="1" value="106" required>
+        </div>
+        <button id="doorNetworkAnalyzeButton" class="btn-secondary" type="submit">
+          ANALYZE SELECTED CSV ROW
+        </button>
+      </form>
+      <p id="doorOfflineCsvStatus" class="network-history-status" role="status" aria-live="polite">
+        CSV assessments use the existing network model and agent pipeline in assessment-only mode. No door or hardware action is executed.
+      </p>
+      <div id="doorOfflineCsvResult" class="offline-csv-result" hidden></div>
+      <div class="network-history-table-wrap">
+        <table class="network-history-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Device Risk</th>
+              <th>Network Risk / Attack</th>
+              <th>Confidence</th>
+              <th>Final Risk</th>
+              <th>Selected PQC</th>
+              <th>Action Status</th>
+            </tr>
+          </thead>
+          <tbody id="doorNetworkAssessmentsBody">
+            <tr><td colspan="7">Loading network assessment history...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 8-Node LangGraph Pipeline Execution Visualizer -->
+    <section class="card pipeline-section">
+      <div class="pipeline-title">LangGraph Autonomous Security Pipeline</div>
+      <div class="pipeline-grid">
+        <div id="node-observe" class="node-box">
+          <div class="node-icon">👁️</div>
+          <div class="node-name">OBSERVE</div>
+          <div class="node-desc">Telemetry Scan</div>
+        </div>
+        <div id="node-assess" class="node-box">
+          <div class="node-icon">🌲</div>
+          <div class="node-name">ASSESS</div>
+          <div class="node-desc">Random Forest</div>
+        </div>
+        <div id="node-reassess" class="node-box">
+          <div class="node-icon">🔍</div>
+          <div class="node-name">REASSESS</div>
+          <div class="node-desc">Velocity & Escalation</div>
+        </div>
+        <div id="node-plan" class="node-box">
+          <div class="node-icon">📋</div>
+          <div class="node-name">PLAN</div>
+          <div class="node-desc">Strategy Matrix</div>
+        </div>
+        <div id="node-decide" class="node-box">
+          <div class="node-icon">⚖️</div>
+          <div class="node-name">DECIDE</div>
+          <div class="node-desc">Action Decision</div>
+        </div>
+        <div id="node-act" class="node-box">
+          <div class="node-icon">🔐</div>
+          <div class="node-name">ACT</div>
+          <div class="node-desc">Adaptive PQC</div>
+        </div>
+        <div id="node-recommend" class="node-box">
+          <div class="node-icon">💡</div>
+          <div class="node-name">RECOMMEND</div>
+          <div class="node-desc">Advisories</div>
+        </div>
+        <div id="node-reflect" class="node-box">
+          <div class="node-icon">🔄</div>
+          <div class="node-name">REFLECT</div>
+          <div class="node-desc">Feedback Loop</div>
+        </div>
+      </div>
+
+      <!-- Live Agent Decision Reasoning Log -->
+      <div class="decision-log-box" id="decisionLogBox">
+        <strong>Security Engine Status:</strong> Ready. Waiting for authentication request from virtual terminal or physical ESP8266 keypad...
+      </div>
+    </section>
+
+  </div>
+
+  <script src="/shared/api.js"></script>
+  <script src="/shared/common.js"></script>
+  <script src="/door/door.js"></script>
+</body>
+</html>

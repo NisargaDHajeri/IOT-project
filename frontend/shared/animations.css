@@ -1,0 +1,35 @@
+/* Keyframe animations and visual effects */
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(109, 124, 255, 0.25); }
+  50% { box-shadow: 0 0 25px rgba(109, 124, 255, 0.6); }
+}
+
+@keyframes alertPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 95, 115, 0.3); border-color: rgba(255, 95, 115, 0.5); }
+  50% { box-shadow: 0 0 35px rgba(255, 95, 115, 0.8); border-color: rgba(255, 95, 115, 0.9); }
+}
+
+@keyframes scanLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+@keyframes openDoor3D {
+  0% { transform: perspective(1000px) rotateY(0deg); }
+  100% { transform: perspective(1000px) rotateY(-80deg); }
+}
+
+@keyframes closeDoor3D {
+  0% { transform: perspective(1000px) rotateY(-80deg); }
+  100% { transform: perspective(1000px) rotateY(0deg); }
+}
+
+@keyframes nodeHighlight {
+  0% { transform: scale(1); border-color: rgba(109, 124, 255, 0.4); }
+  50% { transform: scale(1.08); border-color: #36d9ff; box-shadow: 0 0 16px #36d9ff; }
+  100% { transform: scale(1); border-color: rgba(74, 222, 128, 0.8); }
+}
+
+.anim-pulse { animation: pulseGlow 2.5s infinite ease-in-out; }
+.anim-alert { animation: alertPulse 1.2s infinite ease-in-out; }

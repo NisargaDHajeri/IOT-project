@@ -1,0 +1,28 @@
+{
+  "experiment": "DictionaryBruteForce threshold tuning",
+  "threshold": 0.475,
+  "selection_rule": "No threshold reached 30% validation precision; selected best F1.",
+  "validation_baseline": {
+    "accuracy": 0.8244572397931721,
+    "dictionary_precision": 0.2106299212598425,
+    "dictionary_recall": 0.6661877394636015,
+    "dictionary_f1": 0.32006442705936494
+  },
+  "test_baseline": {
+    "accuracy": 0.825508260041235,
+    "dictionary_precision": 0.2120514064015519,
+    "dictionary_recall": 0.6701149425287356,
+    "dictionary_f1": 0.32215877693866274
+  },
+  "test_tuned": {
+    "accuracy": 0.8254430148498055,
+    "dictionary_precision": 0.2120845921450151,
+    "dictionary_recall": 0.6724137931034483,
+    "dictionary_f1": 0.3224621038125861
+  },
+  "train_samples_used_for_fit": 735683,
+  "validation_samples": 183921,
+  "test_samples": 229902,
+  "features": 39,
+  "random_state": 42
+}

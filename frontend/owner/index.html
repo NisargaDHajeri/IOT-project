@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Security Console • Adaptive PQC Smart Door</title>
+  <link rel="stylesheet" href="/owner/owner.css">
+  <link rel="stylesheet" href="/shared/animations.css">
+</head>
+<body>
+
+  <!-- Owner Authentication Barrier Modal -->
+  <div id="authBarrier" class="auth-barrier">
+    <div class="login-card">
+      <div class="login-icon">🔐</div>
+      <div class="login-title">Owner Security Access</div>
+      <div class="login-sub">Enter administrative credentials to access the door security console.</div>
+
+      <form id="loginForm" onsubmit="handleOwnerLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" id="loginUsername" class="form-input" placeholder="admin" value="admin" required autofocus>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="Enter owner password" required>
+        </div>
+        <button type="submit" id="loginBtn" class="btn-primary">AUTHENTICATE OWNER</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Authenticated Owner Console Shell -->
+  <div id="ownerConsoleShell" style="display:none">
+    
+    <!-- Top Header -->
+    <header class="owner-header">
+      <div class="header-left">
+        <div style="font-size:24px">🛡️</div>
+        <div>
+          <div style="font-weight:800; font-size:16px">Owner Security Operations Center</div>
+          <div style="font-size:11px; color:var(--muted)">Agentic AI & NIST Post-Quantum Cryptographic Defense</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-badge" id="ownerUserBadge">Admin: active</div>
+        <a href="/door" class="nav-link" style="color:var(--cyan); text-decoration:none; font-size:12px; font-weight:700">Public Door ➔</a>
+        <button class="btn-logout" onclick="handleOwnerLogout()">LOGOUT</button>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="owner-wrap">
+      
+      <!-- Telemetry Overview Cards -->
+      <section class="overview-grid">
+        <div class="metric-card">
+          <div class="metric-title">Simulated Door Status</div>
+          <div class="metric-val" id="ovDoorState" style="color:var(--red)">LOCKED</div>
+          <div class="metric-sub" id="ovCredentialVersion">Credential Version: 1</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">ESP8266 Hardware Node</div>
+          <div class="metric-val" id="ovHwStatus" style="color:var(--yellow)">CHECKING...</div>
+          <div class="metric-sub" id="ovHwIp">IP: —</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Active AI Risk Level</div>
+          <div class="metric-val" id="ovRiskLevel" style="color:var(--green)">LOW</div>
+          <div class="metric-sub" id="ovFailedStreak">Failed attempts streak: 0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Post-Quantum Cryptography</div>
+          <div class="metric-val" id="ovPqcSuite" style="font-size:18px; color:var(--cyan)">ML-KEM-512</div>
+          <div class="metric-sub" id="ovPqcSig">Signature: ML-DSA-44</div>
+        </div>
+      </section>
+
+      <!-- 2-Column Grid: Door Control & Password Management / OTP -->
+      <div class="grid2">
+        
+        <!-- Door Override Control Panel -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title">🚪 Simulated Door Actuator Control</div>
+            <span class="badge-tag tag-web">ADMIN OVERRIDE</span>
+          </div>
+          <p style="font-size:13px; color:var(--muted); line-height:1.6">
+            Direct administrative override commands. All actuation events are securely authorized, logged in SQLite, and mirrored to the public door dashboard.
+          </p>
+          <div class="btn-row">
+            <button class="btn-action btn-unlock" onclick="overrideUnlockDoor()">🔓 UNLOCK SIMULATED DOOR</button>
+            <button class="btn-action btn-lock" onclick="overrideLockDoor()">🔒 LOCK SIMULATED DOOR</button>
+          </div>
+
+          <div style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border)">
+            <div style="font-size:12px; font-weight:700; margin-bottom:8px">System Health Telemetry:</div>
+            <div id="systemHealthSummary" style="font-size:12px; color:var(--muted)">
+              Loading subsystem status...
+            </div>
+          </div>
+        </div>
+
+        <!-- Password Management & Cryptographic OTP Generator -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title">🔑 Password Management & OTP</div>
+            <span class="badge-tag tag-hw">AABB COMPATIBLE</span>
+          </div>
+
+          <!-- Dynamic OTP Display Card -->
+          <div class="otp-box" id="otpDisplayBox">
+            <div class="otp-label">Password Reset Authorization Code</div>
+            <div class="otp-code" id="otpCodeDisplay">NO ACTIVE OTP</div>
+            <div class="otp-timer" id="otpCountdownDisplay">Click below to generate 2-minute OTP</div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-action" style="background:linear-gradient(90deg,var(--accent),var(--cyan)); color:#fff" onclick="generateResetOtp()">
+              ⚡ GENERATE RESET OTP
+            </button>
+            <button class="btn-action btn-lock" id="revokeOtpBtn" style="display:none" onclick="revokeActiveOtp()">
+              REVOKE OTP
+            </button>
+          </div>
+
+          <!-- Direct Dashboard Reset Form -->
+          <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border)">
+            <div style="font-size:12px; font-weight:700; margin-bottom:10px">Direct Web Password Reset (Owner):</div>
+            <div style="display:flex; gap:10px; margin-bottom:10px">
+              <input type="password" id="newPinInput" class="form-input" placeholder="New PIN (e.g. 2580)" maxlength="8">
+              <input type="password" id="confirmPinInput" class="form-input" placeholder="Confirm PIN" maxlength="8">
+            </div>
+            <button class="btn-action" style="width:100%" onclick="commitDirectPasswordReset()">
+              UPDATE DOOR CREDENTIAL
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 2-Column Grid: Risk Analytics & Adaptive PQC Profiles -->
+      <div class="grid2">
+        
+        <!-- Risk Analytics & Attack Velocity -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title">📊 Intrusion Risk & Attempt Velocity</div>
+            <span class="badge-tag tag-med">ML RANDOM FOREST</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:12px">
+            <span>Total Attempts: <b id="statTotalAttempts">0</b></span>
+            <span>Success Rate: <b id="statSuccessRate">100%</b></span>
+            <span>Intrusion Alert: <b id="statIntrusionAlert" style="color:var(--green)">NORMAL</b></span>
+          </div>
+          <div style="background:#070b16; border:1px solid var(--border); border-radius:12px; padding:16px">
+            <div style="font-size:11px; color:var(--muted); margin-bottom:6px">RISK DISTRIBUTION:</div>
+            <div style="display:flex; gap:8px; height:18px; border-radius:6px; overflow:hidden; margin-bottom:10px" id="riskBarContainer">
+              <div id="barLow" style="background:var(--green); width:100%"></div>
+              <div id="barMed" style="background:var(--yellow); width:0%"></div>
+              <div id="barHigh" style="background:var(--red); width:0%"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px">
+              <span style="color:var(--green)">LOW: <b id="cntLow">0</b></span>
+              <span style="color:var(--yellow)">MEDIUM: <b id="cntMed">0</b></span>
+              <span style="color:var(--red)">HIGH: <b id="cntHigh">0</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Adaptive PQC Profiles Inspector -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title">🔐 NIST Post-Quantum Profiles</div>
+            <span class="badge-tag tag-web" id="pqcStatusTag">LIBOQS READY</span>
+          </div>
+          <div style="font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:14px">
+            Cryptographic algorithms dynamically scale with evaluated risk tier to defend against Harvest-Now-Decrypt-Later quantum adversaries:
+          </div>
+          
+          <div style="display:flex; flex-direction:column; gap:8px">
+            <div id="pqcCardLow" style="padding:10px 14px; border-radius:10px; background:rgba(74,222,128,0.06); border:1px solid rgba(74,222,128,0.2); display:flex; justify-content:space-between; align-items:center">
+              <div><b>LOW RISK (NIST Level 1)</b><div style="font-size:11px; color:var(--muted)">ML-KEM-512 + ML-DSA-44</div></div>
+              <span class="badge-tag tag-low">ACTIVE</span>
+            </div>
+            <div id="pqcCardMed" style="padding:10px 14px; border-radius:10px; background:rgba(250,204,21,0.06); border:1px solid rgba(250,204,21,0.2); display:flex; justify-content:space-between; align-items:center">
+              <div><b>MEDIUM RISK (NIST Level 3)</b><div style="font-size:11px; color:var(--muted)">ML-KEM-768 + ML-DSA-65</div></div>
+              <span class="badge-tag tag-med">STANDBY</span>
+            </div>
+            <div id="pqcCardHigh" style="padding:10px 14px; border-radius:10px; background:rgba(255,95,115,0.06); border:1px solid rgba(255,95,115,0.2); display:flex; justify-content:space-between; align-items:center">
+              <div><b>HIGH RISK (NIST Level 5)</b><div style="font-size:11px; color:var(--muted)">ML-KEM-1024 + ML-DSA-87</div></div>
+              <span class="badge-tag tag-high">LOCKOUT TIER</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <section class="panel-card" style="margin-top:10px">
+        <div class="panel-header">
+          <div class="panel-title">Recent Security Decisions</div>
+        </div>
+        <p style="color:var(--muted);font-size:12px">
+          Authentication decisions are shown here from the same event records as the security audit stream. They are not network packet assessments.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Source</th>
+                <th>Event / Decision ID</th>
+                <th>Device Risk</th>
+                <th>Network Evidence</th>
+                <th>Final Risk</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentSecurityDecisionsBody">
+              <tr><td colspan="7">Loading recent security decisions...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Security Audit & Access Event Stream -->
+      <section class="panel-card" style="margin-top:10px">
+        <div class="panel-header">
+          <div class="panel-title">🛡️ Real-Time Security Audit Stream</div>
+          <button class="btn-action" style="padding:6px 14px; font-size:11px" onclick="loadOwnerData()">REFRESH EVENTS</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Source</th>
+                <th>Credential Hash</th>
+                <th>User</th>
+                <th>Result</th>
+                <th>ML Risk</th>
+                <th>Agent Risk</th>
+                <th>PQC Suite</th>
+                <th>Action Executed</th>
+              </tr>
+            </thead>
+            <tbody id="eventsTableBody">
+              <tr><td colspan="9">Loading immutable security audit trail...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/shared/api.js"></script>
+  <script src="/shared/common.js"></script>
+  <script src="/owner/owner.js"></script>
+</body>
+</html>

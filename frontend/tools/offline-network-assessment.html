@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline CICIoT Assessment | Adaptive PQC Smart Door</title>
+  <link rel="stylesheet" href="/owner/owner.css">
+  <link rel="stylesheet" href="/shared/animations.css">
+</head>
+<body>
+  <main class="container" style="max-width:900px;margin:32px auto">
+    <section class="panel-card">
+      <div class="panel-header">
+        <h1 class="panel-title">Offline CICIoT Network Assessment</h1>
+        <a href="/owner">Owner Console</a>
+      </div>
+      <p>This isolated tool analyzes a selected row from an offline CICIoT CSV. It does not capture live traffic.</p>
+      <p role="alert" style="margin:12px 0;color:var(--red)">
+        The existing assessment policy may activate a lockout and queue a device command for HIGH-risk input.
+        Use an isolated test database; never test high-risk samples against the active application.
+      </p>
+      <div id="offlineAuthStatus" role="status" aria-live="polite">Checking owner session...</div>
+      <form id="offlineNetworkAssessmentForm" hidden>
+        <div class="form-group">
+          <label class="form-label" for="offlineNetworkCsvFile">CICIoT CSV file</label>
+          <input class="form-input" id="offlineNetworkCsvFile" type="file" accept=".csv,text/csv" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="offlineNetworkCsvRow">Data row number (excluding header)</label>
+          <input class="form-input" id="offlineNetworkCsvRow" type="number" min="1" step="1" value="1" required>
+        </div>
+        <button class="btn-action" id="offlineNetworkCsvSubmit" type="submit">ASSESS OFFLINE CSV ROW</button>
+      </form>
+      <p id="offlineNetworkAssessmentStatus" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="/shared/api.js"></script>
+  <script src="/tools/offline-network-assessment.js"></script>
+</body>
+</html>

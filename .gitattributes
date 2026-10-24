@@ -1,0 +1,2 @@
+ciciot_experiment/**/*.csv filter=lfs diff=lfs merge=lfs -text
+ciciot_experiment/**/*.pkl filter=lfs diff=lfs merge=lfs -text

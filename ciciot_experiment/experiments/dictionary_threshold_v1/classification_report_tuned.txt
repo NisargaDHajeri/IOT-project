@@ -1,0 +1,12 @@
+                      precision    recall  f1-score   support
+
+       BenignTraffic       0.92      0.91      0.91     72080
+      DDoS_SYN_Flood       0.78      0.84      0.81     31965
+        DNS_Spoofing       0.76      0.72      0.74     34747
+DictionaryBruteForce       0.21      0.67      0.32      2610
+       DoS_SYN_Flood       0.87      0.83      0.85     42934
+    MITM_ArpSpoofing       0.83      0.77      0.80     45566
+
+            accuracy                           0.83    229902
+           macro avg       0.73      0.79      0.74    229902
+        weighted avg       0.84      0.83      0.83    229902
